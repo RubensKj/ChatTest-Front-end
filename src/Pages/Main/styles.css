@@ -1,0 +1,38 @@
+.area-card {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.area-card .card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #ecebed;
+  transition: all ease-in 0.2s;
+}
+
+.area-card .card .actions-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.area-card .card .information-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 65px;
+  margin-bottom: 25px;
+}
+
+.area-card .card .information-area .input-area {
+  margin-bottom: 20px;
+}
