@@ -21,6 +21,8 @@ export default function Chatting(props) {
   async function callChatFromAPI(id, history) {
     await api.get(`/chat/${id}`).then(res => {
       setChat(res.data);
+      var elem = document.getElementById('area-to-chat-appear');
+      elem.scrollTop = elem.scrollHeight;
     }).catch(err => {
       switch(err.message) {
         case 'Request failed with status code 500':
@@ -48,6 +50,8 @@ export default function Chatting(props) {
     const channel = pusher.subscribe('chat-' + props.match.params.id);
     channel.bind('new-message', data => {
       setChat(data.chat);
+      var elem = document.getElementById('area-to-chat-appear');
+      elem.scrollTop = elem.scrollHeight;
     });
   }, [props.match.params.id])
 
