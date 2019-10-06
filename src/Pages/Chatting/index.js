@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Pusher from 'pusher-js';
 
 import Input from '../../Components/Input';
 
@@ -11,26 +12,62 @@ export default function Chatting(props) {
 
   const [chat, setChat] = useState(CHAT_MODEL);
 
-  async function callChatFromAPI(id) {
+  // Username from localStorage
+  const [usernameLogged, setUsernameLogged] = useState('');
+
+  // Message from input
+  const [messageFromInput, setMessageFromInput] = useState('');
+
+  async function callChatFromAPI(id, history) {
     await api.get(`/chat/${id}`).then(res => {
-      console.log(res.data);
       setChat(res.data);
+    }).catch(err => {
+      switch(err.message) {
+        case 'Request failed with status code 500':
+          return history.push('/menu-chat');
+        default:
+          return;
+      }
     });
   }
 
   useEffect(() => {
     if (props.match.params.id !== undefined && props.match.params.id !== null) {
-      callChatFromAPI(props.match.params.id);
+      callChatFromAPI(props.match.params.id, props.history);
+      setUsernameLogged(localStorage.getItem('username'));
     } else {
       props.history.push('menu-chat');
     }
   }, [props.match.params.id, props.history]);
+
+  useEffect(() => {
+    const pusher = new Pusher('55323f709121b5910325', {
+      cluster: 'us2',
+      encrypted: true
+    });
+    const channel = pusher.subscribe('chat-' + props.match.params.id);
+    channel.bind('new-message', data => {
+      setChat(data.chat);
+    });
+  }, [props.match.params.id])
 
 
   // SEND MESSAGE
 
   async function sendMessage(e) {
     e.preventDefault();
+
+    if (props.match.params.id !== undefined || props.match.params.id !== null) {
+      let ObjectToAPI = {
+        message: messageFromInput,
+        username: usernameLogged,
+      }
+
+      await api.post(`/chat-message/${props.match.params.id}`, JSON.stringify(ObjectToAPI)).then(res => {
+        setChat(res.data);
+      });
+    }
+    setMessageFromInput('');
   }
 
   return (
@@ -38,25 +75,34 @@ export default function Chatting(props) {
       <div className="card-chat">
         <div className="header-chats">
           <div className="people-from-chat">
-            {chat.users.forEach(user => <span>{user},</span>)}
+            {chat.users.map(user => <span key={user}>{user},</span>)}
           </div>
         </div>
         <div className="chat-area">
           <div id="area-to-chat-appear" className="area">
-            <div className="user-message">
-              <span className="user-username">Gustavo Martins</span>
-              <span className="message">Messagem do gustavo para testar o css! aumentando o texto para visibilidade</span>
-            </div>
-            <div className="my-message">
-              <span className="my-username">RubensKj</span>
-              <span className="message">Minha messagem para testar o css! aumentando o texto para visibilidade</span>
-            </div>
+            {chat.messages.map(message => {
+              if (message.username === usernameLogged) {
+                return (
+                  <div className="my-message" key={message.id}>
+                    <span className="my-username">{message.username}</span>
+                    <span className="message">{message.message}</span>
+                  </div>
+                )
+              } else {
+                return (
+                  <div className="user-message" key={message.id}>
+                    <span className="user-username">{message.username}</span>
+                    <span className="message">{message.message}</span>
+                  </div>
+                )
+              }
+            })}
           </div>
           <form className="to-send-message" onSubmit={e => sendMessage(e)}>
-            <Input type="text" placeholder="Leave your message here" />
-            <div className="button-send">
+            <Input type="text" value={messageFromInput} onChange={e => setMessageFromInput(e.target.value)} placeholder="Leave your message here" />
+            <button className="button-send">
               <span>Send</span>
-            </div>
+            </button>
           </form>
         </div>
       </div>

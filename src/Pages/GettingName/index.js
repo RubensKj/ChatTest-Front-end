@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Input from '../../Components/Input';
-import Button from '../../Components/Button';
+import ButtonSubmit from '../../Components/ButtonSubmit';
 
 import './styles.css';
 
@@ -35,7 +35,7 @@ export default function GettingName(props) {
         <form className="information" onSubmit={e => handleSaveUsernameOnLocal(e)}>
           <span className="error-area">{errors}</span>
           <Input type="text" placeholder="Digite seu nome de usuário!" onChange={e => setUsername(e.target.value)} />
-          <Button text="Create Chat" background="f6583a" borderBottom="d54e34" />
+          <ButtonSubmit text="Create Chat" type="submit" background="f6583a" borderBottom="d54e34" />
         </form>
       </div>
     </div>

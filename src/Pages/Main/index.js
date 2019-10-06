@@ -14,9 +14,17 @@ export default function Main(props) {
 
   // STATES
 
+  // Find by id
   const [isOpen, setIsOpen] = useState(false);
+
+  // Username from user that was set in the first page.
   const [username, setUsername] = useState('');
+
+  // Chat state
   const [chat, setChat] = useState(CHAT_MODEL);
+
+  // Input to get the chat id
+  const [chatID, setChatID] = useState('');
 
   // CHECK IF CONTAINS USERNAME, AND SET IT.
 
@@ -32,16 +40,22 @@ export default function Main(props) {
   // FUNCTIONS
 
   async function handleCreateChat() {
-    let users = chat.users;
-
-    if ((users !== undefined || users !== null) && !users.includes(username)) {
-      setChat({ ...chat, users: [...chat.users, username] })
-    } else {
-      setChat({ ...chat });
-    }
+    setChat({ ...chat, users: [...chat.users, username] })
 
     await api.post('/chat', JSON.stringify(chat)).then(res => {
       props.history.push(`/chat/${res.data.id}`);
+    });
+  }
+
+  async function findChatById(e) {
+    e.preventDefault();
+
+    if (chatID.length <= 0) {
+      return;
+    }
+
+    await api.post(`/chat/${chatID}`, username).then(res => {
+      props.history.push(`/chat/${chatID}`);
     });
   }
 
@@ -65,8 +79,8 @@ export default function Main(props) {
               <ButtonRollback onClick={handleOpen} />
               <HeaderCard />
               <div className="information-area">
-                <Input type="number" placeholder="Digite o número do chat" />
-                <Button text="Find a Chat" onClick={null} background="f5703b" borderBottom="d86233" />
+                <Input type="number" onChange={e => setChatID(e.target.value)} placeholder="Digite o número do chat" />
+                <Button text="Find a Chat" onClick={e => findChatById(e)} background="f5703b" borderBottom="d86233" />
               </div>
             </>
           )}
