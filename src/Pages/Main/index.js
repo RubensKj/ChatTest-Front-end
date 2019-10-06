@@ -4,7 +4,6 @@ import HeaderCard from '../../Components/HeaderCard';
 import Button from '../../Components/Button';
 import Input from '../../Components/Input';
 import ButtonRollback from '../../Components/ButtonRollback';
-import { CHAT_MODEL } from '../../Container/INITIAL_STATES';
 
 import api from '../../Services/api';
 
@@ -20,9 +19,6 @@ export default function Main(props) {
   // Username from user that was set in the first page.
   const [username, setUsername] = useState('');
 
-  // Chat state
-  const [chat, setChat] = useState(CHAT_MODEL);
-
   // Input to get the chat id
   const [chatID, setChatID] = useState('');
 
@@ -30,7 +26,7 @@ export default function Main(props) {
 
   useEffect(() => {
     let user = localStorage.getItem('username');
-    if (user === undefined || user === null) {
+    if (user === undefined && user === null) {
       props.history.push('/');
     } else {
       setUsername(user);
@@ -40,9 +36,13 @@ export default function Main(props) {
   // FUNCTIONS
 
   async function handleCreateChat() {
-    setChat({ ...chat, users: [...chat.users, username] })
+    let chatToAPI = {
+      id: '',
+      messages: [],
+      users: [].concat(username),
+    }
 
-    await api.post('/chat', JSON.stringify(chat)).then(res => {
+    await api.post('/chat', JSON.stringify(chatToAPI)).then(res => {
       props.history.push(`/chat/${res.data.id}`);
     });
   }
