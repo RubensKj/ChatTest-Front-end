@@ -80,6 +80,7 @@
 
 .area-card-chat .card-chat .chat-area .area .user-message {
   display: flex;
+  width: fit-content;
   flex-direction: column;
   background: #fff;
   border: 1px solid #ecebed;
@@ -97,7 +98,9 @@
 
 .area-card-chat .card-chat .chat-area .area .my-message {
   display: flex;
+  width: fit-content;
   flex-direction: column;
+  margin: 0 0 0 auto;
   background: #fff;
   border: 1px solid #ecebed;
   border-radius: 5px;
