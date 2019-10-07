@@ -62,6 +62,10 @@ export default function Chatting(props) {
     e.preventDefault();
 
     if (props.match.params.id !== undefined || props.match.params.id !== null) {
+      if (messageFromInput.length <= 0 || messageFromInput.trim().length === 0) {
+        return;
+      }
+
       let ObjectToAPI = {
         message: messageFromInput,
         username: usernameLogged,
