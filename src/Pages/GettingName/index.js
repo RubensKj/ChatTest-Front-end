@@ -35,7 +35,7 @@ export default function GettingName(props) {
         <form className="information" onSubmit={e => handleSaveUsernameOnLocal(e)}>
           <span className="error-area">{errors}</span>
           <Input type="text" placeholder="Digite seu nome de usuário!" onChange={e => setUsername(e.target.value)} />
-          <ButtonSubmit text="Create Chat" type="submit" background="f6583a" borderBottom="d54e34" />
+          <ButtonSubmit text="Create Name" type="submit" background="f6583a" borderBottom="d54e34" />
         </form>
       </div>
     </div>
